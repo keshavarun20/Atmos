@@ -14,15 +14,28 @@ export function useGeolocation() {
     isLoading: true,
   });
 
+  const USE_MOCK = true; // toggle this to false to use real GPS
+
   const getLocation = () => {
     setLocation((prev) => ({ ...prev, isLoading: true, error: null }));
+
+    if (USE_MOCK) {
+      // MOCK coordinates (example: somewhere in London)
+      const mockCoords = { lat: 51.5074, lon: -0.1278 };
+
+      setTimeout(() => {
+        setLocation({ coordinates: mockCoords, error: null, isLoading: false });
+      }, 500); // simulate GPS delay
+
+      return;
+    }
+
     if (!navigator.geolocation) {
       setLocation({
         coordinates: null,
         error: "Geolocation is not supported by your browser",
         isLoading: false,
       });
-
       return;
     }
 
@@ -61,11 +74,7 @@ export function useGeolocation() {
           isLoading: false,
         });
       },
-      {
-        enableHighAccuracy:true,
-        timeout:5000,
-        maximumAge:0
-      }
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
     );
   };
 
